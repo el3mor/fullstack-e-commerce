@@ -2,6 +2,7 @@ import { axiosInstance } from '@/config';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../store';
 import { toaster } from '@/components/ui/toaster';
+import CookieServices from '@/classes/CookieServices';
 
 interface IInitialState {
   loading: boolean;
@@ -70,12 +71,16 @@ const loginSlice = createSlice({
       state.loading = false;
       state.data = action.payload;
       state.error = null;
+      CookieServices.set('jwt', action.payload.jwt);
+      CookieServices.set('user', action.payload.user);
+
       toaster.create({
         title: 'Login Successful',
         description: 'You have successfully logged in.',
         duration: 2000,
         type: 'success',
       });
+      window.location.reload();
     });
     builder.addCase(userLogin.rejected, (state: IInitialState, action) => {
       state.loading = false;

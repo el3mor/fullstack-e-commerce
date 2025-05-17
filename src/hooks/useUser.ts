@@ -7,7 +7,7 @@ export const useUser = () => {
   useEffect(() => {
     const cookies = new Cookies();
     const token = cookies.get('jwt');
-    console.log(token);
+    cookies.remove('user');
 
     const fetchAndStoreUser = async () => {
       if (!token) return;
@@ -16,7 +16,7 @@ export const useUser = () => {
         const user = await getMe(token);
 
         // Save user info in cookies (e.g. username, email)
-        cookies.remove('user');
+
         cookies.set('user', JSON.stringify(user), {
           path: '/',
           maxAge: 60 * 60 * 24, // 1 day

@@ -1,7 +1,9 @@
 import { addToCart } from '@/app/features/cartSlice';
 import { useAppDispatch } from '@/app/store';
+import CookieServices from '@/classes/CookieServices';
 import { useColorModeValue } from '@/components/ui/color-mode';
 import ProductDetailsSkeleton from '@/components/ui/ProductDetailsSkeleton';
+import { toaster } from '@/components/ui/toaster';
 import { axiosInstance } from '@/config';
 import { ICategory } from '@/interfaces';
 import { Image, HStack, Flex, Heading, Text, Button } from '@chakra-ui/react';
@@ -15,6 +17,7 @@ const ProductsDetailsPage = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const bgCategory = useColorModeValue('gray.100', 'gray.700');
+  const token = CookieServices.get('jwt');
   const { data, isLoading } = useQuery({
     queryKey: ['product', id],
     queryFn: async () => {
@@ -27,6 +30,14 @@ const ProductsDetailsPage = () => {
 
   const goBack = () => navigate(-1);
   const handleAddToCart = () => {
+    if (!token) {
+      toaster.create({
+        title: 'Please login to add to cart',
+        description: 'You must be logged in to add to cart',
+        type: 'error',
+      });
+      return;
+    }
     dispatch(addToCart(data.data));
   };
 

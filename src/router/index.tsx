@@ -14,6 +14,9 @@ import RegisterPage from '@/pages/RegisterPage';
 import { Route, createBrowserRouter, createRoutesFromElements } from 'react-router-dom';
 import DashboardOrdersPage from '@/pages/dashboard/DashboardOrdersPage';
 import MyOrdersPage from '@/pages/MyOrderPage';
+import CookieServices from '@/classes/CookieServices';
+
+const user = CookieServices.get('user');
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -25,7 +28,7 @@ const router = createBrowserRouter(
         <Route
           path="login"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute loginOrSignup>
               <LoginPage />
             </ProtectedRoute>
           }
@@ -38,12 +41,48 @@ const router = createBrowserRouter(
             </ProtectedRoute>
           }
         />
-        <Route path="checkout" element={<CheckoutPage />} />
-        <Route path="my-orders" element={<MyOrdersPage />} />
-        <Route path="my-orders/:id" element={<div>test</div>} />
+        <Route
+          path="checkout"
+          element={
+            <ProtectedRoute loginOrSignup>
+              <CheckoutPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="my-orders"
+          element={
+            <ProtectedRoute loginOrSignup>
+              <MyOrdersPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="my-orders/:id"
+          element={
+            <ProtectedRoute loginOrSignup>
+              <div>test</div>
+            </ProtectedRoute>
+          }
+        />
       </Route>
-      <Route path="order-confirmation" element={<OrderConfirmationPage />} />
-      <Route path="/dashboard" element={<DashboardLayout />}>
+      <Route
+        path="order-confirmation"
+        element={
+          <ProtectedRoute loginOrSignup>
+            <OrderConfirmationPage />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute admin={user?.role?.name === 'Admin'}>
+            <DashboardLayout />
+          </ProtectedRoute>
+        }
+      >
         <Route index element={<DashboardPage />} />
         <Route path="products" element={<DashboardProductPage />} />
         <Route path="categories" element={<DashboardCategoriesPage />} />
