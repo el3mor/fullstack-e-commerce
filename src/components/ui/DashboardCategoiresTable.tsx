@@ -21,6 +21,7 @@ const DashboardCategoriesTable = () => {
   const [openAddModel, setOpenAddModel] = useState(false);
   const [categoryId, setCategoryId] = useState<string | null>(null);
   const [categoryToEdit, setCategoryToEdit] = useState<ICategory | null>(null);
+  const [titleNewCategory, setTitleNewCategory] = useState('');
   const rowBgColor = useColorModeValue('gray.100', 'gray.900');
   const tableBgColor = useColorModeValue('gray.100', 'gray.700');
   const { isLoading, data, error } = useGetCategoriesQuery({ page: 1 });
@@ -28,8 +29,7 @@ const DashboardCategoriesTable = () => {
     useDeleteCategoryMutation();
   const [categoryUpdate, { isLoading: isUpdate, isSuccess: isUpdateSuccess }] =
     useUpdateCategoryMutation();
-  const [categoryAdd, { isLoading: isAdd, isUninitialized: isAddSuccess }] =
-    useAddCategoryMutation();
+  const [categoryAdd, { isLoading: isAdd, isSuccess: isAddSuccess }] = useAddCategoryMutation();
   const handleDeleteBtn = (id: string) => {
     setCategoryId(id);
     SetOpenDialog(true);
@@ -44,8 +44,15 @@ const DashboardCategoriesTable = () => {
   const handleOnChanage = (
     e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
-    const { name, value } = e.target;
-    setCategoryToEdit((prev) => (prev ? { ...prev, [name]: value } : null));
+    const { value } = e.target;
+    setTitleNewCategory(value);
+    setCategoryToEdit((prev) => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        title: value,
+      };
+    });
   };
 
   const handleUpdateProduct = () => {
@@ -69,10 +76,10 @@ const DashboardCategoriesTable = () => {
   const handleAddProduct = () => {
     categoryAdd({
       data: {
-        title: categoryToEdit?.title,
+        title: titleNewCategory,
       },
     });
-    if (!isAddSuccess) {
+    if (isAddSuccess) {
       toaster.create({
         title: 'Category added successfully',
         type: 'success',
@@ -126,7 +133,6 @@ const DashboardCategoriesTable = () => {
     <Box style={{ width: '85%', overflowX: 'auto' }} spaceY={10}>
       <Button
         onClick={() => {
-          setCategoryToEdit(null);
           setOpenAddModel(true);
         }}
       >

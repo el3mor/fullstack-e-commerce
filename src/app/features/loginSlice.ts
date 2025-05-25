@@ -80,7 +80,9 @@ const loginSlice = createSlice({
         duration: 2000,
         type: 'success',
       });
-      window.location.reload();
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
     });
     builder.addCase(userLogin.rejected, (state: IInitialState, action) => {
       state.loading = false;

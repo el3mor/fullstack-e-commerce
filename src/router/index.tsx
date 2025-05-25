@@ -28,7 +28,7 @@ const router = createBrowserRouter(
         <Route
           path="login"
           element={
-            <ProtectedRoute loginOrSignup>
+            <ProtectedRoute isLogin>
               <LoginPage />
             </ProtectedRoute>
           }
@@ -36,7 +36,7 @@ const router = createBrowserRouter(
         <Route
           path="signup"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute isLogin>
               <RegisterPage />
             </ProtectedRoute>
           }
@@ -44,7 +44,7 @@ const router = createBrowserRouter(
         <Route
           path="checkout"
           element={
-            <ProtectedRoute loginOrSignup>
+            <ProtectedRoute>
               <CheckoutPage />
             </ProtectedRoute>
           }
@@ -52,7 +52,7 @@ const router = createBrowserRouter(
         <Route
           path="my-orders"
           element={
-            <ProtectedRoute loginOrSignup>
+            <ProtectedRoute>
               <MyOrdersPage />
             </ProtectedRoute>
           }
@@ -60,7 +60,7 @@ const router = createBrowserRouter(
         <Route
           path="my-orders/:id"
           element={
-            <ProtectedRoute loginOrSignup>
+            <ProtectedRoute>
               <div>test</div>
             </ProtectedRoute>
           }
@@ -69,7 +69,7 @@ const router = createBrowserRouter(
       <Route
         path="order-confirmation"
         element={
-          <ProtectedRoute loginOrSignup>
+          <ProtectedRoute>
             <OrderConfirmationPage />
           </ProtectedRoute>
         }

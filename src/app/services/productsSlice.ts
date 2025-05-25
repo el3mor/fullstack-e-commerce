@@ -33,7 +33,7 @@ export const productsSlice = createApi({
         headers: {
           Authorization: `Bearer ${CookieServices.get('jwt')}`,
         },
-        body: body,
+        body,
       }),
       async onQueryStarted(
         { id, ...patch }: { id: string | undefined; body: FormData },
@@ -56,25 +56,16 @@ export const productsSlice = createApi({
       invalidatesTags: [{ type: 'Product', id: 'LIST' }],
     }),
     updateProduct: builder.mutation({
-      query: ({
-        id,
-        formData,
-      }: {
-        id: string | undefined;
-        formData: FormData | { data: Record<string, any> };
-      }) => ({
+      query: ({ id, body }: { id: string | undefined; body: FormData }) => ({
         url: `/api/products/${id}`,
         method: 'PUT',
         headers: {
           Authorization: `Bearer ${CookieServices.get('jwt')}`,
         },
-        body: formData,
+        body,
       }),
       async onQueryStarted(
-        {
-          id,
-          ...patch
-        }: { id: string | undefined; formData: FormData | { data: Record<string, any> } },
+        { id, ...patch }: { id: string | undefined; body: FormData },
         { dispatch, queryFulfilled },
       ) {
         const patchResult = dispatch(

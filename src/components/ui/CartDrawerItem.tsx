@@ -12,7 +12,7 @@ interface IProps {
 const CartDrawerItem = ({ product }: IProps) => {
   const { id, title, price, quantity, thumbnail } = product;
   const dispatch = useAppDispatch();
-  const { url } = thumbnail.formats.small;
+  const { url } = thumbnail.formats.thumbnail;
   return (
     <Card.Root flexDirection="row" maxW="xl" height="130px">
       <Image objectFit="cover" maxW="70px" src={`${url}`} alt={title} />

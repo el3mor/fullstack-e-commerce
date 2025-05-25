@@ -28,6 +28,7 @@ import SharedAlertDialog from '@/shared/AlertDialog';
 import { useState } from 'react';
 import SharedCustomModel from '@/shared/CustomModel';
 import { HiUpload } from 'react-icons/hi';
+import { toaster } from './toaster';
 
 const DashboardProductTable = () => {
   const [openDialog, SetOpenDialog] = useState(false);
@@ -35,13 +36,15 @@ const DashboardProductTable = () => {
   const [openAddModel, setOpenAddModel] = useState(false);
   const [productId, setProductId] = useState<string | null>(null);
   const [productToEdit, setProductToEdit] = useState<IProduct | null>(null);
+
   const [thumbnail, setThumbnail] = useState<File | null>(null);
   const rowBgColor = useColorModeValue('gray.100', 'gray.900');
   const tableBgColor = useColorModeValue('gray.100', 'gray.700');
   const { isLoading, data, error } = useGetDashboardProductsQuery({ page: 1 });
   const [productDelete, { isLoading: isDelete }] = useDeleteProductMutation();
-  const [productUpdate, { isLoading: isUpdate }] = useUpdateProductMutation();
-  const [productAdd, { isLoading: isAdd }] = useAddProductMutation();
+  const [productUpdate, { isLoading: isUpdate, isSuccess: isUpdateSuccess }] =
+    useUpdateProductMutation();
+  const [productAdd, { isLoading: isAdd, isSuccess: isAddSuccess }] = useAddProductMutation();
   const handleDeleteBtn = (id: string) => {
     setProductId(id);
     SetOpenDialog(true);
@@ -57,7 +60,7 @@ const DashboardProductTable = () => {
     e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target;
-    setProductToEdit((prev) => (prev ? { ...prev, [name]: value } : null));
+    setProductToEdit((prev) => (prev ? { ...prev, [name]: value } : prev));
   };
 
   const onChangePriceHandler = (value: string) => {
@@ -75,66 +78,49 @@ const DashboardProductTable = () => {
   };
 
   const handleUpdateProduct = () => {
-    const hasThumbnail = thumbnail instanceof File;
-
-    if (hasThumbnail) {
-      const formData = new FormData();
-      formData.append(
-        'data',
-        JSON.stringify({
-          title: productToEdit?.title,
-          description: productToEdit?.description,
-          price: productToEdit?.price,
-          stock: productToEdit?.stock,
-        }),
-      );
+    const formData = new FormData();
+    formData.append('data[title]', productToEdit?.title || '');
+    formData.append('data[description]', productToEdit?.description || '');
+    formData.append('data[price]', String(productToEdit?.price || 0));
+    formData.append('data[stock]', String(productToEdit?.stock || 0));
+    if (thumbnail) {
       formData.append('files.thumbnail', thumbnail);
-
-      productUpdate({
-        id: productId || '',
-        formData,
-      });
-    } else {
-      productUpdate({
-        id: productId || '',
-        formData: {
-          data: {
-            title: productToEdit?.title,
-            description: productToEdit?.description,
-            price: productToEdit?.price,
-            stock: productToEdit?.stock,
-          },
-        },
+    }
+    setProductToEdit(null);
+    if (productId) {
+      productUpdate({ id: productId, body: formData });
+    }
+    if (isUpdateSuccess) {
+      setOpenModel(false);
+      toaster.create({
+        title: 'Update Successful',
+        description: 'The Product Updated Successfully',
+        type: 'success',
+        duration: 2000,
       });
     }
   };
 
   const handleAddProduct = () => {
     const formData = new FormData();
-    formData.append(
-      'data',
-      JSON.stringify({
-        title: productToEdit?.title,
-        description: productToEdit?.description,
-        price: productToEdit?.price,
-        stock: productToEdit?.stock,
-      }),
-    );
+    formData.append('data[title]', productToEdit?.title || '');
+    formData.append('data[description]', productToEdit?.description || '');
+    formData.append('data[price]', String(productToEdit?.price || 0));
+    formData.append('data[stock]', String(productToEdit?.stock || 0));
     if (thumbnail) {
       formData.append('files.thumbnail', thumbnail);
     }
-
-    productAdd({
-      data: {
-        title: productToEdit?.title,
-        description: productToEdit?.description,
-        price: productToEdit?.price,
-        stock: productToEdit?.stock,
-      },
-      files: {
-        thumbnail: thumbnail,
-      },
-    });
+    setProductToEdit(null);
+    productAdd(formData);
+    if (isAddSuccess) {
+      setOpenModel(false);
+      toaster.create({
+        title: 'Add Product Successful',
+        description: 'The Product Added Successfully',
+        type: 'success',
+        duration: 2000,
+      });
+    }
   };
 
   if (isLoading) {

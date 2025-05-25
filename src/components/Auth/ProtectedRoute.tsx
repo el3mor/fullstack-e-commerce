@@ -5,30 +5,23 @@ import { Navigate } from 'react-router-dom';
 interface IProps {
   children: ReactNode;
   admin?: boolean;
-  loginOrSignup?: boolean;
+  isLogin?: boolean;
 }
 
-const ProtectedRoute = ({ children, admin, loginOrSignup }: IProps) => {
+const ProtectedRoute = ({ children, admin, isLogin }: IProps) => {
   const { getCookie } = useCookies();
   const token = getCookie('jwt');
   const user = getCookie('user');
-  console.log('user', user);
+
   if (token) {
     if (admin) {
-      console.log('admin');
-      if (user?.role.name !== 'Admin') return <Navigate to="/" replace />; // if user is not admin, redirect to home
-    } else {
-      console.log('no admin');
+      if (user?.role.name === 'Admin') return children; // if user is not admin, redirect to home
+    } else if (isLogin) {
       return <Navigate to="/" replace />;
-    }
-  } else {
-    if (loginOrSignup) {
-      return children;
     } else {
-      return <Navigate to="/login" replace />;
+      return children;
     }
   }
-  return children;
 };
 
 export default ProtectedRoute;
