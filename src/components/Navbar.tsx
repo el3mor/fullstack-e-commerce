@@ -7,18 +7,6 @@ import { useAppDispatch, useAppSelector } from '@/app/store';
 import { toggleDrawer } from '@/app/features/globalSlice';
 import CookieServices from '@/classes/CookieServices';
 
-const token = CookieServices.get('jwt');
-const user = CookieServices.get('user');
-// let Links;
-// if (!token) {
-//   Links = ['Products'];
-// } else {
-//   if (user.role) {
-//     Links = user?.role.name === 'Admin' ? ['Dashboard', 'Products'] : ['Products'];
-//   } else {
-//     Links = ['Products'];
-//   }
-// }
 
 const Links = [
   {
