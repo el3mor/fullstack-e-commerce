@@ -5,7 +5,7 @@ import { useCookies } from '@/hooks/useCookies';
 import Avater from './ui/Avater';
 import { useAppDispatch, useAppSelector } from '@/app/store';
 import { toggleDrawer } from '@/app/features/globalSlice';
-import CookieServices from '@/classes/CookieServices';
+
 
 
 const Links = [
