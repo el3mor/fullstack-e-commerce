@@ -49,7 +49,7 @@ const ProductCard = ({ product }: IProductCard) => {
           >
             {title}
           </Card.Title>
-          <Card.Description>{description}</Card.Description>
+          <p>{description.slice(0, 100)}...</p>
           <HStack gap={10} alignItems={'end'} justifyContent={'space-between'} w={'full'} h="100%">
             <Text textStyle="2xl" fontWeight="bolder" letterSpacing="tight">
               ${price}

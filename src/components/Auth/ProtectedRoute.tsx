@@ -21,7 +21,10 @@ const ProtectedRoute = ({ children, admin, isLogin }: IProps) => {
     } else {
       return children;
     }
+  } else if (isLogin) {
+    return children;
   }
+  return <Navigate to="/" replace />;
 };
 
 export default ProtectedRoute;

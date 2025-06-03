@@ -9,28 +9,15 @@ import CookieServices from '@/classes/CookieServices';
 
 const token = CookieServices.get('jwt');
 const user = CookieServices.get('user');
-// let Links;
-// if (!token) {
-//   Links = ['Products'];
-// } else {
-//   if (user.role) {
-//     Links = user?.role.name === 'Admin' ? ['Dashboard', 'Products'] : ['Products'];
-//   } else {
-//     Links = ['Products'];
-//   }
-// }
+let Links: string[] = ['Products'];
 
-const Links = [
-  {
-    name: 'Products',
-    path: '/products',
-  },
-  {
-    name: 'Dashboard',
-    path: '/dashboard',
-  },
-];
-
+if (token) {
+  if (user?.role) {
+    Links = user?.role.name === 'Admin' ? ['Dashboard', 'Products'] : ['Products'];
+  }
+} else {
+  Links = ['Products'];
+}
 const NavLink = ({ children }: { children: string }) => {
   return (
     <Link to={`/${children.toLowerCase()}`}>
@@ -73,7 +60,7 @@ const Navbar = () => {
           <Link to="/">Home</Link>
           <Flex gap={4} ml={10}>
             {Links.map((link) => (
-              <NavLink key={link.name}>{link.name}</NavLink>
+              <NavLink key={link}>{link}</NavLink>
             ))}
           </Flex>
         </Flex>
